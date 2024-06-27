@@ -1,0 +1,17 @@
+{ butterfl.dat -> swirloid.pal }
+{ spike.dat    -> hazefx.pal   }
+{ woman.dat    -> catsdogs.pal }
+{ duck.dat     -> newton.pal   }
+{ x29.dat      -> malach.pal   }
+{ omega.dat    -> complexa.pal }
+{ heli.dat     -> turbl.pal    }       30,230,90
+{ dc10.dat     -> bloodr.pal   }       ?,?,?
+{ fastcar.dat  -> lichen.pal   }       330,120,280
+{ lion.dat     -> jungloid.pal }       310, 90,270
+{ tiger.dat    -> flowers.pal  }       320, 90,270
+{ eot.dat      -> strange.pal  }       210, 75,270
+{ tricycle.dat -> strange2.pal }       150, 75,270
+{ cow.dat      -> sulf.pal     }       205, 90,270
+{ elk.dat      -> ukrain.pal   }       205, 90,270
+{ horse.dat    -> paisley.pal  }       290, 90,270 	
+{ karg.dat     -> greeny.pal   }

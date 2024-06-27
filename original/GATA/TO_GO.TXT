@@ -1,0 +1,4 @@
+{ heli.dat -> bloodr.pal }
+{ tfdv.dat -> turbl.pal  }
+{ ti.dat   -> ?          }
+{ tf.dat   -> ?          }

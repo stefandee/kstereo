@@ -1,0 +1,2 @@
+Adauga +Obj3d[i].ObjPos ... DONE
+Z real -> ? ... DONE

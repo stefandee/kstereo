@@ -93,9 +93,16 @@ begin
                             Log.LogStatus(Format('mesh %d', [TmpObjType]), 'SceneLoad');
                         end;
 
-                    'sphere':
+                    'concavesphere':
                         begin
-                            TmpObjType := TObj3DType.Sphere;
+                            TmpObjType := TObj3DType.ConcaveSphere;
+                            ValidObjType := true;
+                            Log.LogStatus(Format('sphere %d', [TmpObjType]), 'SceneLoad');
+                        end;
+
+                    'convexsphere':
+                        begin
+                            TmpObjType := TObj3DType.ConvexSphere;
                             ValidObjType := true;
                             Log.LogStatus(Format('sphere %d', [TmpObjType]), 'SceneLoad');
                         end;
@@ -131,7 +138,7 @@ begin
                                 end;
                             end;
 
-                        TObj3DType.Sphere:
+                        TObj3DType.ConvexSphere, TObj3DType.ConcaveSphere:
                             begin
                                 Scale.x := c.GetValue(BaseObjKeyStr + '/radius', 0);
                                 Scale.y := Scale.x;

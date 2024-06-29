@@ -49,7 +49,7 @@ TYPE
     TFaceArray = array[1..MaxFace] of TFace3D;
     PTFaceArray = ^TFaceArray;
 
-    TObj3DType = (Mesh, Sphere);
+    TObj3DType = (Mesh, ConvexSphere, ConcaveSphere);
 
     PTObj3D= ^TObj3D;
     TObj3D = record
@@ -582,7 +582,8 @@ begin
   Log.LogStatus(Format('Vertex count: %d', [WhatObj^.VC]), '3D');
   {WhatObj^.VC := memw[dseg:dofs];WhatObj^.FC := memw[dseg:dofs+2];}
   
-  new(WhatObj^.Vertex);
+  {if WhatObj^.Vertex = nil then}
+    new(WhatObj^.Vertex);
   
   for i:=1 to WhatObj^.VC do
       begin
@@ -609,7 +610,8 @@ begin
   blockread(f, WhatObj^.FC, 2);
   Log.LogStatus(Format('Face count: %d', [WhatObj^.FC]), '3D');
   
-  new(WhatObj^.Face);
+  {if WhatObj^.Face = nil then}
+    new(WhatObj^.Face);
   
   for i:=1 to WhatObj^.FC do
       with WhatObj^.Face^[i] do
@@ -673,7 +675,8 @@ begin
     begin
         with ObjData^ do
         begin
-            new(FaceParams);
+            {if FaceParams = nil then}
+                new(FaceParams);
 
             for i := 1 to FC do
             begin 

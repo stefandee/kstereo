@@ -5,11 +5,12 @@ Interface
 Uses 
 	SDL2,
 	Logger,
-    SDL2_ttf;
+    SDL2_ttf,
+    SDL2_image;
 	
 Const 
-	  SCREEN_WIDTH = 1024; 
-	  SCREEN_HEIGHT = 768; 
+	  SCREEN_WIDTH = 1152; 
+	  SCREEN_HEIGHT = 648;
 	  	
 Var
   SdlRenderer: PSDL_Renderer;
@@ -32,7 +33,7 @@ Var
 procedure InitSDL(windowName: string; width, height: longint);
 begin
 	// scaling filter
-	// SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, '0');
+	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, '0');
 
 	if SDL_Init(SDL_INIT_VIDEO or SDL_INIT_EVENTS or SDL_INIT_TIMER) < 0 then Halt;
 	
@@ -42,12 +43,16 @@ begin
 	sdlRenderer := SDL_CreateRenderer(SdlWindow, -1, SDL_RENDERER_PRESENTVSYNC or SDL_RENDERER_ACCELERATED);
 	if sdlRenderer = nil then Halt;	
 
+    IMG_Init(IMG_INIT_PNG or IMG_INIT_JPG);
+
 	if TTF_Init = -1 then HALT;
 end;
 
 procedure ShutdownSDL;
 begin
 	TTF_Quit;
+
+    IMG_Quit;
 
 	SDL_DestroyRenderer(SdlRenderer);
 	

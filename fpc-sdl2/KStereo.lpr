@@ -1,3 +1,11 @@
+(*
+    check why SDL_QueryTexture fails
+    fix the scene path system (files should be relative to the scene file)
+    create a couple of sample scenes
+    create a release (exe + data)
+    pack sdl2 dlls into a separate release
+*)
+
 program StereogramGenerator_Slow;
 
 uses
@@ -19,35 +27,43 @@ type
 
 const
     FONT_SIZE = 18;
-    MaxImx = 768{480};
-    MaxColor = 255;
-    MaxEx: integer = 512; {320}
-    MaxEy: integer = 384; {240}
-    NpCol: integer = 80;
 
     WorkMode: TWorkMode = TWorkMode.Generate;
 
 var
-    Ecul, Shape: array[0..2 * maximx] of integer;
-    Mcul: array[0..maximx] of UInt32;
+    Ecul, Shape: array of integer;
+    Mcul: array of UInt32;
+
     Xst, Xdr, XModel, A: longint;
-    ObjInScene: integer;
-    gd, gm: integer;
-    max, i, j: integer;
-    x1, y1, z1: longint;
+    MaxEx, MaxEY: integer;
+    i: integer;
     Texture: PSDL_Surface;
     Output: PSDL_Surface;
-    F: file;
-    c: byte;
 
     CurrentScene: TScene;
     ExitRequested: boolean;
 
     PixelFormat: PSDL_PixelFormat;
 
+    SceneFileName: string;
     event: TSDL_Event;
 
-procedure SphereSDF(pos: Point3D; x, y: longint; r: longint);
+procedure ConvexSphereSDF(pos: Point3D; x, y: longint; r: longint);
+var
+    u: real;
+    shapeValue: longint;
+begin
+        u := sqr(r) - sqr(x - pos.x) - sqr(y - pos.y);
+
+        if u > 0 then
+        begin
+            shapeValue := round(pos.z - sqrt(u));
+
+            if shape[x + maxex] > shapeValue then shape[x + maxex] := shapeValue;
+        end;
+end;
+
+procedure ConcaveSphereSDF(pos: Point3D; x, y: longint; r: longint);
 var
     u: real;
     shapeValue: longint;
@@ -56,7 +72,7 @@ begin
 
         if u > 0 then
         begin
-            shapeValue := round(r - sqrt(u));
+            shapeValue := round(pos.z + sqrt(u));
 
             if shape[x + maxex] > shapeValue then shape[x + maxex] := shapeValue;
         end;
@@ -118,8 +134,11 @@ begin
                             end;
                         end;
 
-                        TObj3DType.Sphere:
-                            SphereSDF(Obj3D[i].ObjPos, xc, yc, Obj3D[i].Scale.x);
+                        TObj3DType.ConvexSphere:
+                            ConvexSphereSDF(Obj3D[i].ObjPos, xc, yc, Obj3D[i].Scale.x);
+
+                        TObj3DType.ConcaveSphere:
+                            ConcaveSphereSDF(Obj3D[i].ObjPos, xc, yc, Obj3D[i].Scale.x);
                     end;
         end;
 end;
@@ -127,15 +146,19 @@ end;
 procedure MyStereo;
 var
     x, y, k: integer;
-    c: byte;
     textureBpp, texturePitch: longint;
     outputBpp, outputPitch: longint;
     textureY: longint;
     texture2Screen: PSDL_Texture;
-    DstRect: TSDL_Rect;
+    TextureWidth, TextureHeight: longint;
 begin
-    randomize;
-    fillchar(MCul, sizeof(MCul), 0);
+	{if SDL_QueryTexture(Texture, nil, nil, @TextureWidth, @TextureHeight) < 0 then
+	begin
+		Log.LogError(Format('SDL_QueryTexture failed with error %s', [SDL_GetError]), 'MyStereo');
+        Halt;
+	end;}
+
+    TextureWidth := 80;
 
     textureBpp := Texture^.format^.BytesPerPixel;
     texturePitch := Texture^.pitch;
@@ -143,34 +166,30 @@ begin
     outputBpp := Output^.format^.BytesPerPixel;
     outputPitch := Output^.pitch;
 
-    SDL_LockSurface(Texture);
-
     a := CurrentScene.ZBufferMax div CurrentScene.Dif;
     for y := maxey downto -maxey + 1 do
     begin
-        textureY := (y + MaxEx) mod npcol;
+        textureY := (y + MaxEx) mod TextureWidth;
 
-        SDL_LockSurface(Texture);
-        for k := 0 to npcol - 1 do
+        for k := 0 to TextureWidth - 1 do
+        begin
             MCul[k] := PUInt32(PUint8(Texture^.pixels) + textureY * texturePitch + k * textureBpp)^;
-        SDL_UnlockSurface(Texture);
+        end;
 
         TrackASceneLine(y);
 
-        fillchar(ECul, sizeof(ECul), 0);
+        for k := 0 to sizeof(ECul) do
+            ECul[k] := 0;
+
         xmodel := 0;
 
         for xst := -maxex to maxex do
         begin
-            xmodel := (xmodel + 1) mod npcol;
-            xdr := xst + npcol - CurrentScene.Dif + shape[xst + maxex + npcol div 2] div a;
+            xmodel := (xmodel + 1) mod TextureWidth;
+            xdr := xst + TextureWidth - CurrentScene.Dif + shape[xst + maxex + TextureWidth div 2] div a;
 
             if ecul[xst + maxex] = 0 then
             begin ecul[xst + maxex] := xmodel end;
-
-              {Log.LogStatus(Format('shape/dif/a/npcol: %d %d %d %d', [shape[xst + maxex + npcol div 2], dif, a, npcol]), '3D');
-              Log.LogStatus(Format('xst/ecul[xst]: %d %d', [xst + MaxEx, ecul[xst + maxex]]), '3D');
-              Log.LogStatus(Format('xdr/ecul[xdr]: %d %d', [xdr + MaxEx, ecul[xdr + maxex]]), '3D');}
 
             ecul[xdr + maxex] := ecul[xst + maxex];
         end;
@@ -189,6 +208,7 @@ begin
 
         SDL_UnlockSurface(Output);
 
+        { live preview }
         SDL_SetRenderDrawColor(SdlRenderer, $0, $0, $0, $FF);
         SDL_RenderClear(SdlRenderer);
 
@@ -199,21 +219,27 @@ begin
         SDL_RenderPresent(SdlRenderer);
 
         SDL_DestroyTexture(texture2Screen);
-    end;
 
-    SDL_UnlockSurface(Texture);
+        { tiny bit of delay to avoid unresponsive window - well, maybe }
+        SDL_Delay(15);
+    end;
 end;
 
-function LoadTexture(fileName: string; format: PSDL_PixelFormat): PSDL_Surface;
+function LoadTexture(fileName: string; pixelFormat: PSDL_PixelFormat): PSDL_Surface;
 var
     tmpSurface: PSDL_Surface;
 begin
     tmpSurface := IMG_Load(PChar(fileName));
 
     if tmpSurface = nil then
-    begin Halt end;
+    begin
+        Log.LogError(
+            Format('IMG_Load(%s) failed with error %s', [fileName, SDL_GetError]), 
+            'LoadTexture');
+        Halt;
+    end;
 
-    LoadTexture := SDL_ConvertSurface(tmpSurface, format, 0);
+    LoadTexture := SDL_ConvertSurface(tmpSurface, pixelFormat, 0);
 
     SDL_FreeSurface(tmpSurface);
 end;
@@ -224,7 +250,7 @@ const
     statusBarY = SCREEN_HEIGHT - MARGIN;
     BAR_HEIGHT = MARGIN + FONT_SIZE * 3 div 2;
 begin
-    Bar(0, SCREEN_HEIGHT - BAR_HEIGHT, SCREEN_WIDTH, BAR_HEIGHT, COLOR_BLACK);
+    Bar(0, SCREEN_HEIGHT - BAR_HEIGHT, SCREEN_WIDTH, BAR_HEIGHT, $40000000);
 
     OutTextXY(MARGIN, statusBarY, CurrentScene.sceneName, FontMenu, COLOR_WHITE, BOTTOM);
 
@@ -263,6 +289,14 @@ begin
 
                 PrecomputeFaceValues(Obj3D[i]);
             end;
+    
+    { setup params used for generation }
+    MaxEx := CurrentScene.outputResolution.x div 2;
+    MaxEy := CurrentScene.outputResolution.y div 2;
+
+    setLength(ECul, 2 * CurrentScene.outputResolution.y + 1);
+    setLength(Shape, 2 * CurrentScene.outputResolution.y + 1);
+    setLength(MCul, CurrentScene.outputResolution.y + 1);
 end;
 
 begin
@@ -271,6 +305,8 @@ begin
 
     for i := 1 to ParamCount do
         Log.LogStatus(Format('%d %s', [i, ParamStr(i)]), 'Command Line');
+
+    SceneFileName := ParamStr(1);
 
     { start init video mode }
     InitSDL('Stereogram Generator', SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -281,9 +317,10 @@ begin
 
     PixelFormat := SDL_AllocFormat(SDL_PIXELFORMAT_RGBA32);
 
-    LoadScene(ParamStr(1));
+    LoadScene(SceneFileName);
 
-    RenderMenu;    
+    { TODO should we start with render the scene preview or let the use choose? }
+    RenderMenu;
 
     ExitRequested := false;
 
@@ -313,7 +350,7 @@ begin
 
                         SDLK_R:
                         begin
-                            LoadScene(ParamStr(1));
+                            LoadScene(SceneFileName);
                         end;
 
                         SDLK_S:

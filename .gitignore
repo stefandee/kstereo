@@ -1,5 +1,6 @@
 # Lazarus/FPC compiler-generated binaries (safe to delete)
 *.exe
+*.dll
 *.so
 *.dylib
 *.lrs
@@ -31,3 +32,6 @@ lib/
 
 # Releases
 .releases/
+
+# VSCode
+.vscode/

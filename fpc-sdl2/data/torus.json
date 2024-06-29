@@ -1,0 +1,74 @@
+{
+  "sceneName": "Torus",
+
+  "textureFileName": "data/textures/blanket.png",
+
+  "output": {
+    "fileName": "data/renders/torus.png",
+    "resolution": {
+      "width": 1024,
+      "height": 768
+    }
+  },
+
+  "ZBufferMax": 512,
+  "Dif": 32,
+
+  "obj2": [
+    "a",
+    "b",
+    {"a": 66},
+    {"a": 67},
+    {"a": 68}
+  ],
+
+  "obj": {
+    "0": {
+        "type": "mesh",
+        "fileName": "data/obj3d/STRIP.var",
+        "pos": {
+            "x": 0,
+            "y": 0,
+            "z": 400
+        },
+        "angle": {
+            "x": 60,
+            "y": 60,
+            "z": 245
+        },
+        "scale": {
+            "x": 14,
+            "y": 14,
+            "z": 24
+        }        
+    },
+    "1": {
+        "type": "sphere",
+        "pos": {
+            "x": -300,
+            "y": 100,
+            "z": 100
+        },
+        "angle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        },
+        "radius": 220
+    },
+    "2": {
+        "type": "sphere",
+        "pos": {
+            "x": 0,
+            "y": 0,
+            "z": 350
+        },
+        "angle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        },
+        "radius": 175
+    }
+  }
+}

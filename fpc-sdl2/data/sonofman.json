@@ -1,0 +1,52 @@
+{
+  "sceneName": "Son Of Man",
+
+  "textureFileName": "textures/turtle.png",
+
+  "output": {
+    "fileName": "renders/sonofman.png",
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    }
+  },
+
+  "ZBufferMax": 1024,
+  "Dif": 32,
+
+  "obj": {
+    "0": {
+        "type": "mesh",
+        "fileName": "obj3d/mask.var",
+        "pos": {
+            "x": 0,
+            "y": 0,
+            "z": 400
+        },
+        "angle": {
+            "x": 90,
+            "y": 180,
+            "z": 0
+        },
+        "scale": {
+            "x": 12,
+            "y": 12,
+            "z": 12
+        }        
+    },
+    "1": {
+        "type": "convexsphere",
+        "pos": {
+            "x": 0,
+            "y": 0,
+            "z": 200
+        },
+        "angle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        },
+        "radius": 100
+    }
+  }
+}

@@ -12,13 +12,16 @@ uses
     Classes;
 
 type
+    { Filenames are relative to path of the scene file (baseScenePath) }
     TScene = record
-        sceneName: UnicodeString; { not used }
+        baseScenePath: string;
 
-        outputFileName: string; { full or relative path }
+        sceneName: UnicodeString; 
+
+        outputFileName: string; 
         outputResolution: Point2D;
 
-        textureFileName: UnicodeString; { full or relative path }
+        textureFileName: UnicodeString;
 
         Obj3d: array[1..MaxObj] of TDefObj;
 
@@ -42,7 +45,7 @@ var
     ObjJSON: TJSONObject;
     TmpObjType: TObj3DType;
     ValidObjType: boolean;
-    Obj3DFileName: string;
+    Obj3DFileName: UnicodeString;
     BaseObjKeyStr: string;
 begin
     c := TJSONConfig.Create(Nil);
@@ -59,6 +62,8 @@ begin
 
         with Scene do
         begin
+            baseScenePath := ExtractFilePath(ExpandFileName(fileName));
+
             sceneName := c.GetValue('/sceneName', 'New Scene');
             textureFileName := c.GetValue('/textureFileName', '');
 
@@ -133,8 +138,10 @@ begin
 
                                 if (ObjType = TObj3DType.Mesh) and (Obj3DFileName <> '') then
                                 begin
-                                    new(ObjData);                        
-                                    InitObjFromVar(Obj3DFileName, ObjData);
+                                    new(ObjData);
+
+                                    Log.LogStatus(Format('obj3d path %s', [ConcatPaths([baseScenePath, Obj3DFileName])]), 'SceneLoad');
+                                    InitObjFromVar(ConcatPaths([baseScenePath, Obj3DFileName]), ObjData);
                                 end;
                             end;
 

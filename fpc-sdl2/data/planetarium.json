@@ -1,0 +1,80 @@
+{
+  "sceneName": "Torus",
+
+  "textureFileName": "textures/newton.png",
+
+  "output": {
+    "fileName": "renders/planetarium.png",
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    }
+  },
+
+  "ZBufferMax": 1024,
+  "Dif": 32,
+
+  "obj": {
+    "0": {
+        "type": "mesh",
+        "fileName": "obj3d/STRIP.var",
+        "pos": {
+            "x": 0,
+            "y": 0,
+            "z": 400
+        },
+        "angle": {
+            "x": 60,
+            "y": 60,
+            "z": 245
+        },
+        "scale": {
+            "x": 20,
+            "y": 12,
+            "z": 40
+        }        
+    },
+    "1": {
+        "type": "convexsphere",
+        "pos": {
+            "x": 0,
+            "y": 0,
+            "z": 400
+        },
+        "angle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        },
+        "radius": 300
+    },
+    "2": {
+        "type": "convexsphere",
+        "pos": {
+            "x": 600,
+            "y": 200,
+            "z": 700
+        },
+        "angle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        },
+        "radius": 80
+    },
+    "3": {
+        "type": "convexsphere",
+        "pos": {
+            "x": -640,
+            "y": -200,
+            "z": 300
+        },
+        "angle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        },
+        "radius": 140
+    }
+  }
+}

@@ -1,11 +1,3 @@
-(*
-    check why SDL_QueryTexture fails
-    fix the scene path system (files should be relative to the scene file)
-    create a couple of sample scenes
-    create a release (exe + data)
-    pack sdl2 dlls into a separate release
-*)
-
 program StereogramGenerator_Slow;
 
 uses
@@ -95,26 +87,26 @@ begin
                     case Obj3D[i].ObjType of
                         TObj3DType.Mesh:
                         begin
-                            for j := 1 to Obj3D[i].ObjData^.FC do
+                            for j := 1 to ObjData^.FC do
                             begin
                                 { track the closest Z coordinate }
                                 det2 :=
-                                    (xc - Obj3D[i].ObjData^.Vertex^
-                                    [Obj3D[i].ObjData^.Face^[j].p1].x - Obj3D[i].ObjPos.x) * Obj3D[i].ObjData^.FaceParams^[j].m2 -
-                                    (yc - Obj3D[i].ObjData^.Vertex^
-                                    [Obj3D[i].ObjData^.Face^[j].p1].y - Obj3D[i].ObjPos.y) * Obj3D[i].ObjData^.FaceParams^[j].l2;
+                                    (xc - ObjData^.Vertex^
+                                    [ObjData^.Face^[j].p1].x - ObjPos.x) * ObjData^.FaceParams^[j].m2 -
+                                    (yc - ObjData^.Vertex^
+                                    [ObjData^.Face^[j].p1].y - ObjPos.y) * ObjData^.FaceParams^[j].l2;
 
                                 det3 :=
-                                    (xc - Obj3D[i].ObjData^.Vertex^
-                                    [Obj3D[i].ObjData^.Face^[j].p1].x - Obj3D[i].ObjPos.x) * Obj3D[i].ObjData^.FaceParams^[j].m1 -
-                                    (yc - Obj3D[i].ObjData^.Vertex^
-                                    [Obj3D[i].ObjData^.Face^[j].p1].y - Obj3D[i].ObjPos.y) * Obj3D[i].ObjData^.FaceParams^[j].l1;
+                                    (xc - ObjData^.Vertex^
+                                    [ObjData^.Face^[j].p1].x - ObjPos.x) * ObjData^.FaceParams^[j].m1 -
+                                    (yc - ObjData^.Vertex^
+                                    [ObjData^.Face^[j].p1].y - ObjPos.y) * ObjData^.FaceParams^[j].l1;
 
-                                if (Obj3D[i].ObjData^.FaceParams^[j].det1 <> 0)
+                                if (ObjData^.FaceParams^[j].det1 <> 0)
                                 {and (vectors[j].n1*det2-vectors[j].n2*det3 <> 0)} then
                                 begin
-                                    alfa := det2 / Obj3D[i].ObjData^.FaceParams^[j].det1;
-                                    beta := -det3 / Obj3D[i].ObjData^.FaceParams^[j].det1;
+                                    alfa := det2 / ObjData^.FaceParams^[j].det1;
+                                    beta := -det3 / ObjData^.FaceParams^[j].det1;
 
                                     { verifica daca (x,y,zclose) e in interiorul triunghiului }
                                     if ((alfa > 0) and (alfa < 1{vectors[j].mod1}) and
@@ -123,9 +115,8 @@ begin
                                     then
                                     begin
                                         zclose :=
-                                            Obj3D[i].ObjData^.Vertex^[Obj3D[i].ObjData^.Face^[j].p1].z +
-                                            Obj3D[i].ObjPos.z +
-                                            Obj3D[i].ObjData^.FaceParams^[j].n1 * alfa + Obj3D[i].ObjData^.FaceParams^[j].n2 * beta;
+                                            ObjData^.Vertex^[ObjData^.Face^[j].p1].z + ObjPos.z + 
+                                            ObjData^.FaceParams^[j].n1 * alfa + ObjData^.FaceParams^[j].n2 * beta;
 
                                         if shape[xc + maxex] > zclose then
                                             shape[xc + maxex] := round(zclose);
@@ -143,22 +134,16 @@ begin
         end;
 end;
 
-procedure MyStereo;
+procedure GenerateStereogram;
 var
     x, y, k: integer;
     textureBpp, texturePitch: longint;
     outputBpp, outputPitch: longint;
     textureY: longint;
     texture2Screen: PSDL_Texture;
-    TextureWidth, TextureHeight: longint;
+    TextureWidth: longint;
 begin
-	{if SDL_QueryTexture(Texture, nil, nil, @TextureWidth, @TextureHeight) < 0 then
-	begin
-		Log.LogError(Format('SDL_QueryTexture failed with error %s', [SDL_GetError]), 'MyStereo');
-        Halt;
-	end;}
-
-    TextureWidth := 80;
+    TextureWidth := Texture^.w;
 
     textureBpp := Texture^.format^.BytesPerPixel;
     texturePitch := Texture^.pitch;
@@ -262,13 +247,15 @@ end;
 procedure LoadScene(fileName: string);
 begin
     { TODO cleanup the scene }
-    CurrentScene := LoadSceneFromJSON(ParamStr(1));
+    CurrentScene := LoadSceneFromJSON(fileName);
+
+    Log.LogStatus(Format('Scene %s %s', [fileName, CurrentScene.baseScenePath]), 'LoadScene');
 
     if Texture <> nil then
-        SDL_DestroyTexture(Texture);
+        SDL_FreeSurface(Texture);
 
     { load the texture }
-    Texture := LoadTexture(CurrentScene.textureFileName, PixelFormat);
+    Texture := LoadTexture(ConcatPaths([CurrentScene.baseScenePath, CurrentScene.textureFileName]), PixelFormat);
 
     if Texture = nil then
         Halt;
@@ -328,6 +315,9 @@ begin
         while SDL_PollEvent(@event) = 1 do
         begin
             case event.type_ of
+                SDL_QUITEV:
+                    ExitRequested := true;
+
                 SDL_KEYDOWN:
                 begin
                     case event.key.keysym.sym of
@@ -337,14 +327,14 @@ begin
                         SDLK_P:
                         begin
                             WorkMode := TWorkMode.Preview;
-                            MyStereo;
+                            GenerateStereogram;
                             RenderMenu;
                         end;
 
                         SDLK_G:
                         begin
                             WorkMode := TWorkMode.Generate;
-                            MyStereo;
+                            GenerateStereogram;
                             RenderMenu;
                         end;
 
@@ -354,7 +344,7 @@ begin
                         end;
 
                         SDLK_S:
-                            IMG_SavePNG(Output, PChar(CurrentScene.outputFileName));
+                            IMG_SavePNG(Output, PChar(ConcatPaths([CurrentScene.baseScenePath, CurrentScene.outputFileName])));
                     end;
                 end;
             end;

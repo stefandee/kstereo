@@ -8,7 +8,9 @@ The FPC/SDL2 version was created in 2024, and introduces more features (scenes, 
 Code is not very well documented or straight-forward and in places down right ugly, unfortunately. As I was working on the FPC/SDL2 port, I realized that writing it from scratch would have been a far better approach.
 
 ## Media
-Check out the [image gallery](https://www.pirongames.com/nostalgia-kstereo-a-stereograms-generator/)!
+For the original stereograms, check out the [image gallery](https://www.pirongames.com/nostalgia-kstereo-a-stereograms-generator/)!
+
+![Planetarium Stereogram](.media/planetarium.png "Planetarium stereogram")
 
 ## Setup (General)
 

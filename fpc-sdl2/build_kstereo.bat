@@ -8,4 +8,4 @@ fpc -Mobjfpc -g -gl -S2 -Sg -Sc -Sh -XS -Xt -FU./obj -Fu"../SDL2-for-Pascal/unit
 
 @if %ERRORLEVEL% GEQ 1 EXIT /B %ERRORLEVEL%
 
-KStereo.EXE data/torus.json
+KStereo.EXE data/staticnaturewithoutonions.json

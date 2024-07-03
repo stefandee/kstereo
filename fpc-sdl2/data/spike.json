@@ -1,0 +1,38 @@
+{
+  "sceneName": "Spike",
+
+  "textureFileName": "textures/bubble.png",
+
+  "output": {
+    "fileName": "renders/spike.png",
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    }
+  },
+
+  "ZBufferMax": 1024,
+  "Dif": 32,
+
+  "obj": {
+    "0": {
+        "type": "mesh",
+        "fileName": "obj3d/spike.var",
+        "pos": {
+            "x": 0,
+            "y": 0,
+            "z": 600
+        },
+        "angle": {
+            "x": 45,
+            "y": 45,
+            "z": 45
+        },
+        "scale": {
+            "x": 3,
+            "y": 3,
+            "z": 3
+        }        
+    }
+  }
+}

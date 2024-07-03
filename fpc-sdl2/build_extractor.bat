@@ -8,4 +8,4 @@ fpc -Mobjfpc -g -gl -S2 -Sg -Sc -Sh -XS -Xt -FU./obj ExtractVARFromOBJ.pas
 
 @if %ERRORLEVEL% GEQ 1 EXIT /B %ERRORLEVEL%
 
-ExtractVARFromOBJ.EXE .\data\obj3d\BFLY.OBJ .\data\obj3d\butterfly.var
+ExtractVARFromOBJ.EXE ..\original\x29.OBJ .\data\obj3d\x29.var

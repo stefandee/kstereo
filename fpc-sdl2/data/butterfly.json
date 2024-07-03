@@ -1,0 +1,38 @@
+{
+  "sceneName": "Butterfly",
+
+  "textureFileName": "textures/paper.png",
+
+  "output": {
+    "fileName": "renders/butterfly.png",
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    }
+  },
+
+  "ZBufferMax": 1024,
+  "Dif": 32,
+
+  "obj": {
+    "0": {
+        "type": "mesh",
+        "fileName": "obj3d/butterfly.var",
+        "pos": {
+            "x": 0,
+            "y": 0,
+            "z": 200
+        },
+        "angle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        },
+        "scale": {
+            "x": 2,
+            "y": 2,
+            "z": 2
+        }        
+    }
+  }
+}

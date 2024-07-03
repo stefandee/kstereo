@@ -1,0 +1,75 @@
+{
+  "sceneName": "Spheres",
+
+  "textureFileName": "textures/malach.png",
+
+  "output": {
+    "fileName": "renders/spheres.png",
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    }
+  },
+
+  "ZBufferMax": 1024,
+  "Dif": 32,
+
+  "obj": {
+    "0": {
+        "type": "convexsphere",
+        "pos": {
+            "x": -450,
+            "y": 0,
+            "z": 500
+        },
+        "angle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        },
+        "radius": 400
+    },
+    "1": {
+        "type": "concavesphere",
+        "pos": {
+            "x": 450,
+            "y": 0,
+            "z": 500
+        },
+        "angle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        },
+        "radius": 400
+    },
+    "2": {
+        "type": "concavesphere",
+        "pos": {
+            "x": 450,
+            "y": 0,
+            "z": 500
+        },
+        "angle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        },
+        "radius": 300
+    },
+    "3": {
+        "type": "concavesphere",
+        "pos": {
+            "x": 450,
+            "y": 0,
+            "z": 500
+        },
+        "angle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        },
+        "radius": 200
+    }
+  }
+}

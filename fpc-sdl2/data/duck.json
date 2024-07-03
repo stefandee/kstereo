@@ -1,0 +1,38 @@
+{
+  "sceneName": "Duck",
+
+  "textureFileName": "textures/swirloid.png",
+
+  "output": {
+    "fileName": "renders/duck.png",
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    }
+  },
+
+  "ZBufferMax": 1024,
+  "Dif": 32,
+
+  "obj": {
+    "0": {
+        "type": "mesh",
+        "fileName": "obj3d/duck.var",
+        "pos": {
+            "x": 0,
+            "y": 0,
+            "z": 600
+        },
+        "angle": {
+            "x": 315,
+            "y": 90,
+            "z": 90
+        },
+        "scale": {
+            "x": 4,
+            "y": 4,
+            "z": 4
+        }        
+    }
+  }
+}

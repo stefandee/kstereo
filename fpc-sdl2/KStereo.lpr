@@ -45,6 +45,7 @@ var
     u: real;
     shapeValue: longint;
 begin
+        { perturbation: 0.75 * r * Sin(10 * x) * Sin(10 * y) }
         u := sqr(r) - sqr(x - pos.x) - sqr(y - pos.y);
 
         if u > 0 then
@@ -60,7 +61,7 @@ var
     u: real;
     shapeValue: longint;
 begin
-        u := sqr(r - pos.z) - sqr(x - pos.x) - sqr(y - pos.y);
+        u := sqr(r) - sqr(x - pos.x) - sqr(y - pos.y);
 
         if u > 0 then
         begin

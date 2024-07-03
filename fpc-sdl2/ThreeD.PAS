@@ -581,7 +581,10 @@ begin
   blockread(f, WhatObj^.VC, 2);
   Log.LogStatus(Format('Vertex count: %d', [WhatObj^.VC]), '3D');
   {WhatObj^.VC := memw[dseg:dofs];WhatObj^.FC := memw[dseg:dofs+2];}
-  
+
+  {blockread(f, WhatObj^.FC, 2);
+  Log.LogStatus(Format('Face count: %d', [WhatObj^.FC]), '3D');}
+
   {if WhatObj^.Vertex = nil then}
     new(WhatObj^.Vertex);
   
@@ -607,6 +610,7 @@ begin
       end;
   {dofsaux := dofs+WhatObj^.VC*6+4;}
   {WhatObj^.FC := memw[dseg:dofsaux];}
+
   blockread(f, WhatObj^.FC, 2);
   Log.LogStatus(Format('Face count: %d', [WhatObj^.FC]), '3D');
   

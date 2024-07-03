@@ -10,6 +10,7 @@ Code is not very well documented or straight-forward and in places down right ug
 ## Media
 For the original stereograms, check out the [image gallery](https://www.pirongames.com/nostalgia-kstereo-a-stereograms-generator/)!
 
+For the newest ones in glorious HD, check the [renders](fpc-sdl2/data/renders/) folder. Here's an appetizer!
 ![Planetarium Stereogram](.media/planetarium.png "Planetarium stereogram")
 
 ## Setup (General)
@@ -47,22 +48,27 @@ The 3D object type can be:
 Turbo Pascal/Borland Pascal is needed to build it. You may want to build [fast_r.pas](original/FAST_R.PAS), as it's, well, fast.
 
 ## 3D Objects format
-I have lost the 3D objects in var/ascii format that I've used to generate the original stereograms. They still exist as obj, but please note that this is the output of running Borland binobj.exe on the var files - they are data disguised as code in the [OMF 16](https://en.wikipedia.org/wiki/Object_Module_Format_(Intel)) format. 
+The original 3D objects are in OBJ format, which is data disguised as code in the [OMF 16](https://en.wikipedia.org/wiki/Object_Module_Format_(Intel)) format. A conversion tool is provided, [ExtractVARFromObj.pas](fpc-sdl2/ExtractVARFromOBJ.pas) that converts them back to VAR format.
 
-Not sure why I thought at that time that linking data would be more flexible than reading an external file, but hey, ~30 years after I've learned better :) But it may be possible to recover the data, though.
+Not sure why I thought at that time that linking data would be more flexible than reading an external file, but hey, ~30 years after I've learned better :)
 
-Meanwhile, a couple of "var" 3d objects which come from my Amorphis demo are available in the [obj3d](fpc-sdl2/data/obj3d/) folder. 
+The original 3d objects and a few from my Amorphis demo are available in the [obj3d](fpc-sdl2/data/obj3d/) folder. 
 
-The "var" format is:
+The VAR format is quite simple:
 * number of vertices (UInt16)
 * each vertex contains x, y, z as Int16 (6 bytes)
 * number of faces (UInt16)
-* each face has 3 vertex indices (UInt16) and a color (byte) (7 bytes)
+* each face has 3 vertex indices (UInt16) and a color (byte) (7 bytes) - make sure you triangulate before exporting from your 3D modeler program.
 
 ## TODO
+* support for floating point
+* port the fast version of the generator to SDL2
 * maybe a Unity plugin ;)
 
 ## License
 
 Code license:
 https://opensource.org/licenses/MIT
+
+Original stereograms:
+https://creativecommons.org/licenses/by-nc-sa/4.0/
